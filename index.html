@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning GIS | ArcGIS Pro Watershed Delineation</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Learning the GIS Software</h1>
+            <p class="subtitle">A step-by-step guide for common workflows</p>
+        </header>
+
+        <main>
+            <h2>Watershed Delineation in ArcGIS Pro</h2>
+            <p class="intro">This guide provides the complete workflow for delineating a watershed using a Digital Elevation Model (DEM) in ArcGIS Pro. The steps cover the core process and optional advanced analyses.</p>
+
+            <section class="step-card">
+                <h3>Step 1: Add Digital Elevation Model (DEM) Data</h3>
+                <p>The first step is to add your DEM data (e.g., a GeoTIFF file) to ArcGIS Pro by dragging it into the map view. You can adjust the layer's symbology to better visualize the terrain.</p>
+            </section>
+
+            <section class="step-card">
+                <h3>Step 2: Fill Sinks</h3>
+                <p>This process corrects imperfections in the DEM to create a hydrologically correct surface, ensuring continuous water flow for the analysis.</p>
+                <div class="tool-info">
+                    <p><strong>Tool:</strong> Fill</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Spatial Analyst Tools > Hydrology > Fill</code></p>
+                </div>
+            </section>
+            
+            <section class="step-card">
+                <h3>Step 3: Create Flow Direction Raster</h3>
+                <p>This tool creates a raster that shows the downslope direction water will flow from each cell.</p>
+                <div class="tool-info">
+                    <p><strong>Tool:</strong> Flow Direction</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Spatial Analyst Tools > Hydrology > Flow Direction</code></p>
+                </div>
+            </section>
+
+            <section class="step-card">
+                <h3>Step 4: Create Flow Accumulation Raster</h3>
+                <p>This tool calculates the number of upstream cells flowing into each cell, which helps identify and visualize stream channels.</p>
+                <div class="tool-info">
+                    <p><strong>Tool:</strong> Flow Accumulation</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Spatial Analyst Tools > Hydrology > Flow Accumulation</code></p>
+                </div>
+            </section>
+
+            <section class="step-card">
+                <h3>Step 5: Create Outlet Points (Pour Points)</h3>
+                <p>You must define the specific outlet point for your watershed. This involves two actions:</p>
+                <div class="tool-info">
+                    <p><strong>Action:</strong> Create a new point feature class.</p>
+                    <p><strong>Location:</strong> In the <strong>Catalog</strong> pane, right-click your folder and go to <code>New > Shapefile</code> (or Feature Class within a geodatabase).</p>
+                </div>
+                <div class="tool-info">
+                    <p><strong>Action:</strong> Add a point to the new layer at your desired outlet location (on a high-flow-accumulation cell).</p>
+                    <p><strong>Location:</strong> Use the tools in the <strong>Edit</strong> tab, specifically the <strong>Create</strong> tool. Remember to save your edits.</p>
+                </div>
+            </section>
+
+            <section class="step-card">
+                <h3>Step 6: Delineate the Watershed</h3>
+                <p>This is the final step that generates the watershed boundary based on your flow direction raster and outlet point.</p>
+                <div class="tool-info">
+                    <p><strong>Tool:</strong> Watershed</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Spatial Analyst Tools > Hydrology > Watershed</code></p>
+                </div>
+            </section>
+
+            <section class="step-card">
+                <h3>Step 7: Convert Raster to Polygon (Optional)</h3>
+                <p>To make the watershed raster more usable for area calculations and other vector analyses, convert it to a polygon feature.</p>
+                <div class="tool-info">
+                    <p><strong>Tool:</strong> Raster to Polygon</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Conversion Tools > From Raster > Raster to Polygon</code></p>
+                </div>
+            </section>
+            
+            <h2>Optional Advanced Steps</h2>
+
+            <section class="step-card">
+                <h3>Generate River Lines</h3>
+                <p>You can create a vector line feature representing the river network within your watershed.</p>
+                <div class="tool-info">
+                    <p><strong>1. Tool:</strong> Reclassify</p>
+                    <p><strong>Description:</strong> First, isolate cells with high flow accumulation values from your Flow Accumulation raster.</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Spatial Analyst Tools > Reclass > Reclassify</code></p>
+                </div>
+                <div class="tool-info">
+                    <p><strong>2. Tool:</strong> Raster to Polyline</p>
+                    <p><strong>Description:</strong> Next, convert the reclassified raster (representing streams) into a line feature.</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Conversion Tools > From Raster > Raster to Polyline</code></p>
+                </div>
+                <div class="tool-info">
+                    <p><strong>3. Tool:</strong> Clip</p>
+                    <p><strong>Description:</strong> Finally, you can clip the generated river lines to your watershed boundary for a clean map.</p>
+                    <p><strong>Location:</strong> <code>Geoprocessing > Toolboxes > Analysis Tools > Extract > Clip</code></p>
+                </div>
+            </section>
+
+        </main>
+        <footer>
+            <p>&copy; 2025 Learning GIS. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
