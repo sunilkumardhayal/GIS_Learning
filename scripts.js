@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- GUIDES PAGE LOGIC ---
+    // This check ensures this code only runs on pages with guide content
     if (document.querySelector('#arcgis-task-list') || document.querySelector('#qgis-task-list')) {
         const ICONS = {
             data: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H6a2 2 0 00-2 2z" /></svg>`,
@@ -125,47 +126,47 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             qgis: {
                  watershed: [
-                    { id: 1, title: 'DEM Download', icon: 'data', color: 'from-lime-500 to-green-500', quick: 'Download DEM from USGS or OpenTopography.', 
-                      description: 'The first step is to obtain a Digital Elevation Model (DEM). The quality of your analysis depends on the resolution and accuracy of your DEM.',
+                    { id: 1, title: 'DEM Download', icon: 'data', color: 'from-lime-500 to-green-500', quick: 'Download from OpenTopography or USGS.', 
+                      description: 'To obtain the primary data source, a Digital Elevation Model (DEM), which is a raster representation of a continuous surface where each cell value represents an elevation. The quality of your watershed analysis depends heavily on the resolution and accuracy of your DEM.',
                       extras: [
-                        { type: 'protip', title: 'Recommended Sources:', content: '<strong>Opentopography:</strong> An excellent source for various high-resolution DEM products.<br><strong>USGS EarthExplorer:</strong> Provides a vast collection of geospatial data, including the widely-used SRTM DEM.' }
+                        { type: 'protip', title: 'Recommended Sources:', content: '<strong>Opentopography:</strong> A web-based data portal that provides access to high-resolution topography data.<br><strong>USGS EarthExplorer:</strong> Provides a vast collection of geospatial data, including the widely-used SRTM DEM.' }
                       ]
                     },
-                    { id: 2, title: 'Project the DEM', icon: 'process', color: 'from-green-500 to-emerald-500', quick: 'Reproject DEM to a UTM Zone.',
-                      description: 'Raw DEMs often use geographic coordinates (degrees). For accurate calculations, you must reproject the DEM to a projected coordinate system (like UTM) where units are in meters.',
+                    { id: 2, title: 'Project the DEM', icon: 'process', color: 'from-green-500 to-emerald-500', quick: 'Use Warp (Reproject) tool.',
+                      description: 'Raw DEMs often come in a geographic CRS (like WGS84), where units are in degrees. For calculations involving distance and area, it is crucial to reproject the DEM to a projected CRS (like a UTM Zone), where units are in meters.',
                       extras: [
                         { type: 'params', title: 'Tool:', content: 'In QGIS, this can be done using the <strong>Warp (Reproject)</strong> tool found in the <code>Raster > Projections</code> menu.' }
                       ]
                     },
                     { id: 3, title: 'Fill Sinks', icon: 'process', color: 'from-emerald-500 to-teal-500', quick: 'Tool: Fill Sinks (Wang & Liu)',
-                      description: 'This step pre-processes the DEM by removing "sinks" or depressions, which can artificially trap water flow and lead to incorrect watershed delineation. The Wang & Liu algorithm is a highly efficient method for this.',
+                      description: 'This step pre-processes the DEM by removing "sinks" or depressions, which can artificially trap water flow. The Wang & Liu algorithm is a highly efficient method for this.',
                       extras: [
-                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill Sinks (Wang & Liu)<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (DEM):</strong> Your projected DEM raster.<br><strong>Output (Filled DEM):</strong> This is the main output, a "Depressionless DEM".'}
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill Sinks (Wang & Liu)<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (DEM):</strong> Your projected DEM raster.<br><strong>Outputs:</strong> The primary output is the "Filled DEM". This tool can also generate Flow Direction and Watershed Basins simultaneously.' }
                       ]
                     },
                     { id: 4, title: 'Calculate Flow Accumulation', icon: 'process', color: 'from-teal-500 to-cyan-500', quick: 'Tool: Catchment Area (SAGA)',
-                      description: 'The SAGA "Catchment Area" tool calculates the cumulative flow for each cell. Cells with high flow accumulation values represent stream and river channels.',
+                      description: 'This tool uses the Flow Direction grid to determine how many upstream cells flow into each individual cell. Cells with high values correspond to stream channels.',
                       extras: [
                           { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Catchment Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (Elevation):</strong> Your "Filled DEM".' },
-                          { type: 'protip', title: 'Key Outputs:', content: 'This single tool generates multiple important layers. For the next steps, you will need the <strong>Flow Direction</strong> raster and the <strong>Catchment Area</strong> raster (which is the same as Flow Accumulation).' }
+                          { type: 'protip', title: 'Note:', content: 'The tool is named "Catchment Area" in SAGA, but its main output is the flow accumulation raster, which is crucial for defining the river network.' }
                       ]
                     },
                     { id: 5, title: 'Delineate Upslope Area', icon: 'output', color: 'from-cyan-500 to-sky-500', quick: 'Tool: Upslope Area (SAGA)',
                       description: 'This tool delineates the specific catchment area (watershed) for a chosen outlet point by tracing all cells upstream that contribute flow to it.',
                       extras: [
-                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Upslope Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Target X/Y Coordinates:</strong> You must provide the coordinates (in meters) of your outlet point.<br><strong>Flow Direction:</strong> The Flow Direction raster from the previous step.'}
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Upslope Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input:</strong> You must provide the X and Y coordinates of your chosen outlet point (in meters).<br><strong>Output:</strong> A raster file where the watershed cells have one value, and all other cells have another.'}
                       ]
                     },
                     { id: 6, title: 'Convert to Vector', icon: 'advanced', color: 'from-sky-500 to-blue-500', quick: 'Tool: Polygonize (Raster to Vector)',
                       description: 'Convert the raster watershed into a vector polygon for easier measurement, analysis, and map-making.',
                       extras: [
-                          { type: 'params', title: 'Actions:', content: '<strong>1. Use Raster to Vector tool:</strong> Find the <strong>Polygonize (Raster to Vector)</strong> tool in <code>Raster > Conversion</code>.<br><strong>2. Clean Attributes:</strong> Open the attribute table of the new vector file. Select and delete the polygon(s) that represent the area outside your watershed, leaving only the single polygon that defines your catchment boundary.'}
+                          { type: 'params', title: 'Actions:', content: '<strong>1. Tool:</strong> Use the <strong>Polygonize (Raster to Vector)</strong> tool from <code>Raster > Conversion</code>.<br><strong>2. Cleanup:</strong> Open the attribute table of the new vector file. Select and delete the polygon(s) that represent the area outside your watershed, leaving only the single desired polygon.'}
                       ]
                     },
                     { id: 7, title: 'Extract Channel Network', icon: 'advanced', color: 'from-blue-500 to-indigo-500', quick: 'Tool: Channel Network (SAGA)',
-                      description: 'This optional step extracts the stream network as a vector line file.',
+                      description: 'This optional step automatically extracts the stream network as a vector line file.',
                       extras: [
-                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Channel Network and Drainage Basins<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Channels</code><br><strong>Elevation:</strong> Your "Filled DEM".<br><strong>Threshold:</strong> A critical parameter. A lower number (e.g., 5) creates a dense network of small streams. A higher number creates a network of only major rivers.'}
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Channel Network and Drainage Basins<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Channels</code><br><strong>Elevation:</strong> Your "Filled DEM".<br><strong>Threshold:</strong> A critical parameter that defines the minimum number of cells required to form a channel. A lower value (e.g., 5) creates a denser network.'}
                       ]
                     }
                 ]
@@ -260,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
             taskListContainer.innerHTML = tasksHTML;
 
-            // Render the content for each task
             tasks.forEach(task => {
                 const guideContainer = document.getElementById(`${software}-${task.key}-guide`);
                 if(guideContainer){
