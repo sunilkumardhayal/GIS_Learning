@@ -60,4 +60,56 @@
                             <div></div> </div>
                         
                         <div class="flex justify-center mb-6 p-1 bg-indigo-100 rounded-lg max-w-md mx-auto">
-                            <button
+                            <button class="view-toggle-btn active w-1/3 py-2 text-sm font-medium rounded-md" data-action="switchView" data-params="arcgis-watershed,quick">Quick View</button>
+                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,detailed">Detailed View</button>
+                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,document">Document View</button>
+                        </div>
+                        
+                        <div id="arcgis-watershed-quick-flowchart" class="view-content flowchart"></div>
+                        <div id="arcgis-watershed-detailed-flowchart" class="view-content flowchart hidden"></div>
+                        <div id="arcgis-watershed-document-view" class="view-content hidden"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="qgis-content" class="software-content hidden">
+                <div id="qgis-task-selection">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">QGIS Guides</h2>
+                    <div id="qgis-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        </div>
+                </div>
+
+                <div id="qgis-watershed-guide" class="hidden">
+                    <div class="glass-card rounded-xl shadow-2xl p-6 md:p-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <button class="flex items-center text-sm font-semibold text-green-600 hover:text-green-800 transition-colors" data-action="showTaskSelection" data-params="qgis">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                Back to Guides
+                            </button>
+                            <h2 class="text-2xl font-bold text-center text-green-700">Watershed Delineation</h2>
+                            <div></div> </div>
+                        
+                        <div class="flex justify-center mb-6 p-1 bg-green-100 rounded-lg max-w-md mx-auto">
+                            <button class="view-toggle-btn active w-1/3 py-2 text-sm font-medium rounded-md" data-action="switchView" data-params="qgis-watershed,quick">Quick View</button>
+                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="qgis-watershed,detailed">Detailed View</button>
+                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="qgis-watershed,document">Document View</button>
+                        </div>
+                        
+                        <div id="qgis-watershed-quick-flowchart" class="view-content flowchart"></div>
+                        <div id="qgis-watershed-detailed-flowchart" class="view-content flowchart hidden"></div>
+                        <div id="qgis-watershed-document-view" class="view-content hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <footer class="bg-gray-800 text-gray-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="current-year"></span> GIS Learning Hub. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="scripts.js"></script>
+</body>
+</html>
