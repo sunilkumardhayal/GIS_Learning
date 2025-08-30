@@ -3,435 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GIS Learning Hub | Interactive Guides</title>
+    <title>GIS Learning Hub | Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253, 100%, 95%, 1) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(289, 100%, 95%, 1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, hsla(202, 100%, 95%, 1) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, hsla(343, 100%, 95%, 1) 0px, transparent 50%);
-            background-size: 200% 200%;
-            animation: gradient-animation 30s ease infinite;
-        }
-        @keyframes gradient-animation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        main {
-             transition: transform 0.2s ease-out; /* For parallax effect */
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .flowchart-node {
-            transition: all 0.3s ease;
-        }
-        .flowchart-node-wrapper:hover .flowchart-node, .flowchart-node.active {
-            transform: scale(1.03);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-        .flowchart-node-wrapper:focus-visible .flowchart-node {
-            outline: 3px solid #4f46e5;
-            outline-offset: 2px;
-        }
-        .flowchart-arrow {
-            height: 2.5rem; 
-            width: 2px;
-            background: #cbd5e1;
-            margin: 0.5rem auto;
-        }
-        .inline-details {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 0;
-            overflow: hidden;
-        }
-        .inline-details.open {
-            max-height: 800px;
-        }
-        .main-tab.active {
-            border-color: #4f46e5;
-            background-color: #eef2ff;
-            color: #4338ca;
-        }
-        .view-toggle-btn.active {
-            background-color: #4f46e5;
-            color: white;
-            box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
-        }
-        .task-card {
-             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .task-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.15), 0 0 20px rgba(79, 70, 229, 0.3);
-        }
-        /* Styles for Document View */
-        .doc-step-card {
-            background-color: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        .doc-step-card code {
-            background-color: #eef2ff;
-            color: #4338ca;
-            padding: 0.2em 0.4em;
-            border-radius: 0.25rem;
-            font-size: 0.9em;
-        }
-        /* Entrance animations */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <header class="text-center py-8 px-4 fade-in-up">
-        <div class="inline-block p-4 bg-white/60 backdrop-blur-sm rounded-full shadow-lg">
-             <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-500"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <svg class="h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m0 0v2.25m0-2.25h1.5m-1.5 0h-1.5m0-11.25h1.5m-1.5 0h-1.5m6.375 11.25h1.5m-1.5 0h-1.5m0 0v2.25m0-2.25v-2.25m0 0h1.5m-1.5 0h-1.5m-1.5-9h1.5m-1.5 0v1.5m0 0h1.5m-1.5 0h-1.5m-1.5 0V3m6 18v-2.25m0 2.25h1.5m-1.5 0h-1.5m0 0v-2.25m0 2.25v-2.25m0 0h1.5m-1.5 0h-1.5m6.75-12v2.25m0 2.25h-1.5m1.5 0h1.5m0 0v-2.25m0 2.25v-2.25m0 0h-1.5m1.5 0h1.5" />
+                </svg>
+                <span class="text-2xl font-bold text-gray-900">GIS Learning Hub</span>
+            </a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-indigo-600 font-semibold">Home</a>
+                <a href="guides.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">Guides</a>
+                <a href="about.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">About</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
         </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mt-4 tracking-tight">GIS Learning Hub</h1>
-        <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">Interactive guides to master GIS software workflows. Select your software and a task to begin.</p>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="index.html" class="block py-2 text-indigo-600 font-semibold">Home</a>
+            <a href="guides.html" class="block py-2 text-gray-600 hover:text-indigo-600">Guides</a>
+            <a href="about.html" class="block py-2 text-gray-600 hover:text-indigo-600">About</a>
+        </div>
     </header>
 
-    <div class="container mx-auto px-4 py-8">
-        
-        <div class="flex justify-center mb-8 bg-white/50 rounded-xl p-2 shadow-md max-w-lg mx-auto fade-in-up" style="transition-delay: 150ms;">
-            <button class="main-tab active w-1/2 p-3 font-semibold rounded-lg border-2 border-transparent transition-all" data-action="showSoftware" data-params="arcgis">ArcGIS Pro</button>
-            <button class="main-tab w-1/2 p-3 font-semibold rounded-lg border-2 border-transparent transition-all text-gray-500" data-action="showSoftware" data-params="qgis">QGIS</button>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg text-white flex items-center justify-center min-h-screen -mt-20">
+            <div class="text-center px-6">
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4">
+                    Master GIS Workflows, <br> <span class="text-indigo-400 type-effect"></span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+                    Your central resource for interactive, step-by-step guides to conquer complex tasks in ArcGIS Pro and QGIS.
+                </p>
+                <a href="guides.html" class="bg-indigo-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-600 transition duration-300 transform hover:scale-105 shadow-xl text-lg">
+                    Start Learning Now
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="current-year"></span> GIS Learning Hub. All rights reserved.</p>
         </div>
-
-        <main class="fade-in-up" style="transition-delay: 300ms;">
-            <!-- ArcGIS Pro Content -->
-            <div id="arcgis-content" class="software-content">
-                <!-- Task Selection -->
-                <div id="arcgis-task-selection">
-                    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Select a Task</h2>
-                    <div id="arcgis-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Tasks will be injected by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Watershed Delineation Guide -->
-                <div id="arcgis-watershed-guide" class="hidden">
-                    <div class="glass-card rounded-xl shadow-2xl p-6 md:p-8">
-                        <div class="flex justify-between items-center mb-4">
-                            <button class="flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors" data-action="showTaskSelection" data-params="arcgis">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
-                                Back to Tasks
-                            </button>
-                            <h2 class="text-2xl font-bold text-center text-indigo-700">Watershed Delineation</h2>
-                            <div></div> <!-- Spacer -->
-                        </div>
-                        
-                        <div class="flex justify-center mb-6 p-1 bg-indigo-100 rounded-lg max-w-md mx-auto">
-                            <button class="view-toggle-btn active w-1/3 py-2 text-sm font-medium rounded-md" data-action="switchView" data-params="arcgis-watershed,quick">Quick View</button>
-                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,detailed">Detailed View</button>
-                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,document">Document View</button>
-                        </div>
-                        
-                        <div id="arcgis-watershed-quick-flowchart" class="view-content flowchart"></div>
-                        <div id="arcgis-watershed-detailed-flowchart" class="view-content flowchart hidden"></div>
-                        <div id="arcgis-watershed-document-view" class="view-content hidden"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- QGIS Content -->
-            <div id="qgis-content" class="software-content hidden">
-                 <div class="glass-card rounded-xl shadow-2xl p-6 md:p-8 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-400 mb-4"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    <h2 class="text-2xl font-bold text-gray-700">Coming Soon!</h2>
-                    <p class="mt-2 text-gray-500">Step-by-step guides for QGIS are currently under development.</p>
-                </div>
-            </div>
-        </main>
-    </div>
-    
-    <footer class="text-center mt-12 py-8 border-t border-gray-300/20">
-        <p class="text-gray-500">&copy; 2025 GIS Learning Hub. All rights reserved.</p>
     </footer>
-
-    <script>
-        const ICONS = {
-            data: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H6a2 2 0 00-2 2z" /></svg>`,
-            process: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><circle cx="12" cy="12" r="3" /></svg>`,
-            action: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>`,
-            output: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
-            advanced: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>`
-        };
-
-        const arcgisTasks = [
-            {
-                key: 'watershed',
-                title: 'Watershed Delineation',
-                description: 'An interactive guide to delineating catchment areas from a Digital Elevation Model (DEM).',
-                icon: ICONS.process
-            }
-        ];
-
-        const arcgisData = {
-            watershed: [
-                { id: 1, title: 'Add DEM Data', icon: 'data', color: 'from-green-400 to-blue-500', quick: 'Add DEM to map.', 
-                  description: 'The first step is to add your DEM data (e.g., a 30m SRTM GeoTIFF) to ArcGIS Pro. This can be done by simply dragging the file into the map view.',
-                  extras: [
-                    { type: 'protip', title: 'Pro Tip:', content: 'Right-click the DEM layer and go to <strong>Symbology</strong> to apply a color scheme. This helps to visually identify high elevation areas (hills) and low elevation areas (valleys) before you begin the analysis.' }
-                  ]
-                },
-                { id: 2, title: 'Fill Sinks', icon: 'process', color: 'from-blue-500 to-cyan-500', quick: 'Tool: Fill', 
-                  description: 'This process corrects imperfections in the DEM to create a "hydrologically correct" surface, which is essential for accurate flow modeling.',
-                  extras: [
-                    { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Fill</code><br><strong>Input:</strong> Your original DEM raster.<br><strong>Output:</strong> A new "Filled" DEM raster (.tif).' }
-                  ]
-                },
-                { id: 3, title: 'Flow Direction', icon: 'process', color: 'from-cyan-500 to-teal-500', quick: 'Tool: Flow Direction',
-                  description: 'This tool creates a raster that shows the direction water will flow from each cell to its steepest downslope neighbor.',
-                  extras: [
-                    { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Flow Direction<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Flow Direction</code><br><strong>Input:</strong> Your "Filled" DEM from the previous step.<br><strong>Flow Direction Type:</strong> Use the default <strong>D8</strong> method.'}
-                  ]
-                },
-                { id: 4, title: 'Flow Accumulation', icon: 'process', color: 'from-teal-500 to-emerald-500', quick: 'Tool: Flow Accumulation',
-                  description: 'This tool calculates how many upstream cells flow into each cell, highlighting stream channels.',
-                  extras: [
-                    { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Flow Accumulation<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Flow Accumulation</code><br><strong>Input:</strong> Your "Flow Direction" raster.' },
-                    { type: 'protip', title: 'Pro Tip (Visualization):', content: 'To better see the river network, right-click the new layer > <strong>Symbology</strong>. Change the type to <strong>Classify</strong> with 2 classes. Lower the "upper value" of the first class (e.g., to 100,000) to reveal more tributaries.' }
-                  ]
-                },
-                { id: 5, title: 'Create Outlet Points', icon: 'action', color: 'from-emerald-500 to-lime-500', quick: 'Action: Create Point',
-                  description: 'You must manually define the specific point (or "pour point") for your watershed.',
-                  extras: [
-                      { type: 'params', title: 'Actions:', content: '<strong>1. Create Feature Class:</strong> In the <strong>Catalog</strong> pane, right-click your project folder > <code>New > Shapefile</code>. Set Geometry Type to "Point".<br><strong>2. Add Point:</strong> Go to the <strong>Edit</strong> tab and click <strong>Create</strong>. Select your new shapefile and place a point on a high-flow-accumulation cell (a white line on your Flow Accumulation raster).<br><strong>3. Save Edits:</strong> Crucially, click <strong>Save</strong> in the Edit tab to finalize the point creation.' }
-                  ]
-                },
-                { id: 6, title: 'Delineate Watershed', icon: 'output', color: 'from-lime-500 to-yellow-500', quick: 'Tool: Watershed',
-                  description: 'This is the final step that generates the watershed boundary based on your flow direction and outlet point.',
-                  extras: [
-                      { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Watershed<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Watershed</code><br><strong>Input Flow Direction Raster:</strong> Your "Flow Direction" raster.<br><strong>Input Point Data:</strong> Your outlet point shapefile.'}
-                  ]
-                },
-                { id: 7, title: 'Optional Advanced Steps', icon: 'advanced', color: 'from-yellow-500 to-amber-500', quick: 'Convert & Generate Rivers',
-                  description: 'These steps convert your raster results into more usable vector formats.',
-                  extras: [
-                    { type: 'params', title: 'Convert Watershed to Polygon:', content: '<strong>Tool:</strong> Raster to Polygon<br><strong>Location:</strong> <code>Conversion Tools > From Raster</code><br>This is useful for calculating the watershed area.' },
-                    { type: 'params', title: 'Generate River Lines:', content: '<strong>1. Reclassify:</strong> Use the <strong>Reclassify</strong> tool on your Flow Accumulation raster to isolate high-value cells (the streams).<br><strong>2. Raster to Polyline:</strong> Use this tool to convert the reclassified stream raster into a line feature.<br><strong>3. Clip:</strong> Use the <strong>Clip</strong> tool to trim the river lines to your watershed boundary polygon.'}
-                  ]
-                }
-            ]
-        };
-
-        function getExtraInfoHTML(extra) {
-            const colors = {
-                protip: { bg: 'bg-green-50', border: 'border-green-500', title: 'text-green-800', text: 'text-green-700' },
-                params: { bg: 'bg-blue-50', border: 'border-blue-500', title: 'text-blue-800', text: 'text-blue-700' }
-            };
-            const color = colors[extra.type] || colors.params;
-            return `<div class="mt-3 p-3 ${color.bg} border-l-4 ${color.border} rounded-r-md"><p class="font-semibold ${color.title}">${extra.title}</p><p class="text-sm ${color.text}">${extra.content}</p></div>`;
-        }
-        
-        function createFlowchartHTML(data, viewType) {
-            return data.map((step, index) => {
-                const stepNumber = index + 1;
-                
-                if (viewType === 'quick') {
-                    return `
-                        <div class="flowchart-step-container">
-                            ${index > 0 ? '<div class="flowchart-arrow"></div>' : ''}
-                            <div class="flowchart-node relative bg-gradient-to-br ${step.color} text-white rounded-lg p-4 flex items-center shadow-lg w-full">
-                                ${ICONS[step.icon]}
-                                <div class="flex-grow">
-                                    <h3 class="font-bold">${stepNumber}. ${step.title}</h3>
-                                    <p class="text-sm text-white/80">${step.quick}</p>
-                                </div>
-                            </div>
-                        </div>`;
-                } else { // Detailed view
-                    return `
-                        <div class="flowchart-step-container">
-                            ${index > 0 ? '<div class="flowchart-arrow"></div>' : ''}
-                            <div class="flowchart-step">
-                                <button class="flowchart-node-wrapper w-full text-left rounded-lg" data-action="toggleDetails" aria-expanded="false">
-                                    <div class="flowchart-node relative bg-gradient-to-br ${step.color} text-white rounded-lg p-4 flex items-center shadow-lg w-full">
-                                        ${ICONS[step.icon]}
-                                        <div class="flex-grow">
-                                            <h3 class="font-bold">${stepNumber}. ${step.title}</h3>
-                                        </div>
-                                        <svg class="chevron w-6 h-6 text-white/80 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
-                                    </div>
-                                </button>
-                                <div class="inline-details">
-                                    <div class="p-4 mt-2 bg-white rounded-lg text-gray-700 border shadow-inner">
-                                        <p>${step.description}</p>
-                                        ${(step.extras || []).map(getExtraInfoHTML).join('')}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-                }
-            }).join('');
-        }
-        
-        function createDocumentViewHTML(data) {
-            let html = `<div><p class="mb-6 text-gray-600">This guide provides the complete workflow for delineating a watershed using a Digital Elevation Model (DEM) in ArcGIS Pro.</p>`;
-            html += data.map((step, index) => {
-                 const stepNumber = index + 1;
-                 return `
-                    <div class="doc-step-card">
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">Step ${stepNumber}: ${step.title}</h3>
-                        <p class="text-gray-700">${step.description}</p>
-                        ${(step.extras || []).map(getExtraInfoHTML).join('')}
-                    </div>`;
-            }).join('');
-            html += '</div>';
-            return html;
-        }
-
-        function renderTasks(software) {
-            const taskListContainer = document.getElementById(`${software}-task-list`);
-            if (!taskListContainer) return;
-
-            let tasksHTML = '';
-            if (software === 'arcgis') {
-                tasksHTML = arcgisTasks.map(task => `
-                    <button class="task-card text-left bg-white p-6 rounded-xl shadow-lg border border-gray-200" data-action="showTask" data-params="arcgis,${task.key}">
-                        <div class="flex items-center mb-3">
-                            <div class="p-3 bg-indigo-100 rounded-full mr-4">${task.icon.replace('h-6 w-6 mr-3', 'h-8 w-8 text-indigo-600')}</div>
-                            <h3 class="text-xl font-bold text-gray-900">${task.title}</h3>
-                        </div>
-                        <p class="text-gray-600">${task.description}</p>
-                    </button>
-                `).join('');
-            }
-            
-            tasksHTML += `<div class="task-card bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center">
-                    <h3 class="text-lg font-semibold text-gray-500">More Tasks Coming Soon</h3>
-                    <p class="text-gray-400 mt-1 text-sm">Future guides like Network Analysis will appear here.</p>
-                </div>`;
-            taskListContainer.innerHTML = tasksHTML;
-        }
-
-        // --- Event Handlers ---
-        function showSoftware(software, btn) {
-            document.querySelectorAll('.software-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`${software}-content`).classList.remove('hidden');
-            document.querySelectorAll('.main-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function showTask(software, task) {
-            document.getElementById(`${software}-task-selection`).classList.add('hidden');
-            document.getElementById(`${software}-${task}-guide`).classList.remove('hidden');
-        }
-
-        function showTaskSelection(software) {
-            document.getElementById(`${software}-task-selection`).classList.remove('hidden');
-            document.querySelectorAll(`[id^="${software}-"][id$="-guide"]`).forEach(el => el.classList.add('hidden'));
-        }
-
-        function switchView(guideId, view, btn) {
-            const container = document.getElementById(`${guideId}-guide`);
-            container.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
-            container.querySelector(`#${guideId}-${view}-flowchart, #${guideId}-${view}-view`).classList.remove('hidden');
-            
-            container.querySelectorAll('.view-toggle-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function toggleDetails(buttonElement) {
-            const isExpanded = buttonElement.getAttribute('aria-expanded') === 'true';
-            const flowchart = buttonElement.closest('.flowchart');
-            
-            if (flowchart) { // Check if flowchart is not null
-                flowchart.querySelectorAll('.flowchart-node-wrapper[aria-expanded="true"]').forEach(openButton => {
-                    if (openButton !== buttonElement) {
-                        openButton.setAttribute('aria-expanded', 'false');
-                        openButton.parentElement.querySelector('.inline-details').classList.remove('open');
-                        openButton.querySelector('.flowchart-node').classList.remove('active');
-                        openButton.querySelector('.chevron').style.transform = 'rotate(0deg)';
-                    }
-                });
-            }
-
-            buttonElement.setAttribute('aria-expanded', !isExpanded);
-            const stepElement = buttonElement.parentElement;
-            stepElement.querySelector('.inline-details').classList.toggle('open');
-            buttonElement.querySelector('.flowchart-node').classList.toggle('active');
-            buttonElement.querySelector('.chevron').style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
-        }
-        
-        // --- Initial Setup ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Render all dynamic content
-            document.getElementById('arcgis-watershed-quick-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'quick');
-            document.getElementById('arcgis-watershed-detailed-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'detailed');
-            document.getElementById('arcgis-watershed-document-view').innerHTML = createDocumentViewHTML(arcgisData.watershed);
-            renderTasks('arcgis');
-            
-            // Centralized event listener using delegation
-            document.body.addEventListener('click', (e) => {
-                const button = e.target.closest('button[data-action]');
-                if (!button) return;
-
-                const action = button.dataset.action;
-                const params = button.dataset.params ? button.dataset.params.split(',') : [];
-
-                switch (action) {
-                    case 'showSoftware':
-                        showSoftware(params[0], button);
-                        break;
-                    case 'showTask':
-                        showTask(params[0], params[1]);
-                        break;
-                    case 'showTaskSelection':
-                        showTaskSelection(params[0]);
-                        break;
-                    case 'switchView':
-                        switchView(params[0], params[1], button);
-                        break;
-                    case 'toggleDetails':
-                        toggleDetails(button);
-                        break;
-                }
-            });
-
-            // Entrance Animations
-            const animatedElements = document.querySelectorAll('.fade-in-up');
-            animatedElements.forEach((el, index) => {
-                setTimeout(() => { el.classList.add('visible'); }, index * 150);
-            });
-        });
-
-        document.body.addEventListener('mousemove', (e) => {
-            const mainContent = document.querySelector('main');
-            const taskSelectionVisible = document.getElementById('arcgis-task-selection').offsetParent !== null;
-
-            if (mainContent && taskSelectionVisible) {
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
-                mainContent.style.transform = `perspective(1000px) rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
-            } else if (mainContent) {
-                mainContent.style.transform = 'none';
-            }
-        });
-    </script>
-
+    
+    <script src="scripts.js"></script>
 </body>
 </html>
 
