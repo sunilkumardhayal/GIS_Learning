@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- GUIDES PAGE LOGIC ---
-    // This check ensures this code only runs on pages with guide content
     if (document.querySelector('#arcgis-task-list') || document.querySelector('#qgis-task-list')) {
         const ICONS = {
             data: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H6a2 2 0 00-2 2z" /></svg>`,
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 color: 'indigo'
             }
         ];
-
+        
         const qgisTasks = [
             {
                 key: 'watershed',
@@ -126,44 +125,44 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             qgis: {
                  watershed: [
-                    { id: 1, title: 'DEM Download & Project', icon: 'data', color: 'from-green-500 to-teal-500', quick: 'Download and project your DEM.', 
+                    { id: 1, title: 'DEM Download & Project', icon: 'data', color: 'from-lime-500 to-green-500', quick: 'Download and project your DEM.', 
                       description: 'Download a Digital Elevation Model from sources like OpenTopography or USGS. Once loaded into QGIS, it is crucial to reproject the DEM into a projected coordinate system (e.g., UTM) using the <strong>Warp (Reproject)</strong> tool. This ensures all subsequent calculations are accurate.',
                       extras: [
                         { type: 'protip', title: 'Why Project?:', content: 'Hydrology tools calculate distances and areas. Geographic coordinate systems (like WGS84) use degrees, which are not uniform units of measure across the globe, leading to inaccurate results. Projected systems use meters or feet.' }
                       ]
                     },
-                    { id: 2, title: 'Fill Sinks', icon: 'process', color: 'from-teal-500 to-cyan-500', quick: 'Tool: Fill Sinks (SAGA)',
+                    { id: 2, title: 'Fill Sinks', icon: 'process', color: 'from-green-500 to-emerald-500', quick: 'Tool: Fill Sinks (SAGA)',
                       description: 'Use the <strong>Fill Sinks (Wang & Liu)</strong> tool from the SAGA toolbox to remove small depressions in the DEM. This creates a "depressionless" DEM, which is required for all hydrology tools to work correctly.',
                       extras: [
                         { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill Sinks (Wang & Liu)<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (DEM):</strong> Your projected DEM raster.<br><strong>Output (Filled DEM):</strong> A new "Filled DEM" raster.' }
                       ]
                     },
-                    { id: 3, title: 'Flow Accumulation', icon: 'process', color: 'from-cyan-500 to-sky-500', quick: 'Tool: Catchment Area (SAGA)',
+                    { id: 3, title: 'Flow Accumulation', icon: 'process', color: 'from-emerald-500 to-teal-500', quick: 'Tool: Catchment Area (SAGA)',
                       description: 'In QGIS, the SAGA <strong>Catchment Area</strong> tool is a powerful function that calculates both Flow Direction and Flow Accumulation in a single step.',
                       extras: [
-                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Catchment Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (Elevation):</strong> Your "Filled DEM".'},
-                        { type: 'protip', title: 'Important Outputs:', content: 'This tool creates several new layers. The two you need are the <strong>Flow Direction</strong> raster and the <strong>Catchment Area</strong> raster (which is QGIS/SAGA\'s name for Flow Accumulation).' }
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Catchment Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (Elevation):</strong> Your "Filled DEM" from the previous step.'},
+                        { type: 'protip', title: 'Important Outputs:', content: 'This tool creates several new layers. The two you need for the next steps are the <strong>Flow Direction</strong> raster and the <strong>Catchment Area</strong> raster (which is QGIS/SAGA\'s name for Flow Accumulation).' }
                       ]
                     },
-                    { id: 4, title: 'Define Outlet Point', icon: 'action', color: 'from-sky-500 to-blue-500', quick: 'Action: Create Point & Copy Coordinates',
-                      description: 'You must specify the "pour point" of your watershed. The SAGA tool requires its exact coordinates.',
+                    { id: 4, title: 'Define Outlet Point', icon: 'action', color: 'from-teal-500 to-cyan-500', quick: 'Action: Create Point & Copy Coordinates',
+                      description: 'You need to define the outlet (pour point) of your watershed. The SAGA tool requires its exact coordinates.',
                       extras: [
-                          { type: 'params', title: 'Actions:', content: '<strong>1. Create New Layer:</strong> Go to <code>Layer > Create Layer > New Temporary Scratch Layer...</code>. Name it "Outlet" and set Geometry type to "Point".<br><strong>2. Add Point:</strong> Select the new layer, enable editing (pencil icon), and use the "Add Point Feature" tool to place a point on a bright line in your Catchment Area (Flow Accumulation) raster.<br><strong>3. Copy Coordinates:</strong> Use the <strong>Coordinate Capture</strong> plugin to get the precise X and Y coordinates of the point you just created. Copy these values (e.g., into a text file).' }
+                          { type: 'params', title: 'Actions:', content: '<strong>1. Create New Layer:</strong> Go to <code>Layer > Create Layer > New Temporary Scratch Layer...</code>. Give it a name and set Geometry type to "Point".<br><strong>2. Add Point:</strong> Select the new layer, enable editing (pencil icon), and use the "Add Point Feature" tool to place a point on a bright line in your Catchment Area (Flow Accumulation) raster.<br><strong>3. Copy Coordinates:</strong> Use the <strong>Coordinate Capture</strong> plugin to get the precise X and Y coordinates of the point you just created. Copy these values (e.g., into a text file).' }
                       ]
                     },
-                    { id: 5, title: 'Delineate Watershed', icon: 'output', color: 'from-blue-500 to-indigo-500', quick: 'Tool: Upslope Area (SAGA)',
-                      description: 'The <strong>Upslope Area</strong> tool uses the flow direction and your outlet coordinates to calculate the final watershed.',
+                    { id: 5, title: 'Delineate Watershed', icon: 'output', color: 'from-cyan-500 to-sky-500', quick: 'Tool: Upslope Area (SAGA)',
+                      description: 'The <strong>Upslope Area</strong> tool uses the flow direction and your outlet point coordinates to calculate the final watershed.',
                       extras: [
                           { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Upslope Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Target X/Y Coordinates:</strong> Paste the X and Y coordinates of your outlet point.<br><strong>Elevation:</strong> Your "Filled DEM".<br><strong>Method:</strong> Use the default [0] Deterministic 8.'}
                       ]
                     },
-                    { id: 6, title: 'Convert to Vector', icon: 'advanced', color: 'from-indigo-500 to-violet-500', quick: 'Tool: Raster to Vector',
+                    { id: 6, title: 'Convert to Vector', icon: 'advanced', color: 'from-sky-500 to-blue-500', quick: 'Tool: Raster to Vector',
                       description: 'The "Upslope Area" result is a raster. To make it more useful, convert it to a polygon vector file.',
                       extras: [
                           { type: 'params', title: 'Actions:', content: '<strong>1. Use Raster to Vector tool:</strong> Find it in the <code>Processing Toolbox</code>.<br><strong>2. Clean Attributes:</strong> Open the attribute table of the new vector file and remove any rows that do not represent your watershed (often there is a "0" value for the area outside the watershed that can be deleted).'}
                       ]
                     },
-                    { id: 7, title: 'Extract Channel Network', icon: 'advanced', color: 'from-violet-500 to-purple-500', quick: 'Tool: Channel Network (SAGA)',
+                    { id: 7, title: 'Extract Channel Network', icon: 'advanced', color: 'from-blue-500 to-indigo-500', quick: 'Tool: Channel Network (SAGA)',
                       description: 'You can automatically generate vector river lines for your new watershed.',
                       extras: [
                           { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Channel Network and Drainage Basins<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Channels</code><br><strong>Elevation:</strong> Your "Filled DEM".<br><strong>Threshold:</strong> Set this to control how many tributaries are generated. A smaller number (e.g., 5) creates a denser network. The output will be a new vector layer named "Channels".'}
@@ -263,9 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Render the content for each task
             tasks.forEach(task => {
-                document.getElementById(`${software}-${task.key}-quick-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'quick');
-                document.getElementById(`${software}-${task.key}-detailed-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'detailed');
-                document.getElementById(`${software}-${task.key}-document-view`).innerHTML = createDocumentViewHTML(data[task.key]);
+                const guideContainer = document.getElementById(`${software}-${task.key}-guide`);
+                if(guideContainer){
+                    guideContainer.querySelector(`#${software}-${task.key}-quick-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'quick');
+                    guideContainer.querySelector(`#${software}-${task.key}-detailed-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'detailed');
+                    guideContainer.querySelector(`#${software}-${task.key}-document-view`).innerHTML = createDocumentViewHTML(data[task.key]);
+                }
             });
         }
 
