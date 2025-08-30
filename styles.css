@@ -56,6 +56,11 @@ body {
     color: white;
     box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
 }
+/* QGIS Active Button */
+#qgis-content .view-toggle-btn.active {
+    background-color: #16a34a; /* green-600 */
+}
+
 
 /* Task Card Interaction */
 .task-card {
