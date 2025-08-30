@@ -140,4 +140,217 @@ document.addEventListener('DOMContentLoaded', () => {
                     { id: 3, title: 'Fill Sinks', icon: 'process', color: 'from-emerald-500 to-teal-500', quick: 'Tool: Fill Sinks (Wang & Liu)',
                       description: 'This step pre-processes the DEM by removing "sinks" or depressions, which can artificially trap water flow and lead to incorrect watershed delineation. The Wang & Liu algorithm is a highly efficient method for this.',
                       extras: [
-                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill Sinks (Wang & Liu)<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (DEM):</strong> Your projected DEM raster.<br><strong>Outputs:</strong> The primary output is the "Filled DEM". This tool can also generate Flow Direction
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill Sinks (Wang & Liu)<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (DEM):</strong> Your projected DEM raster.<br><strong>Outputs:</strong> The primary output is the "Filled DEM". This tool can also generate Flow Direction and Watershed Basins simultaneously.' }
+                      ]
+                    },
+                    { id: 4, title: 'Calculate Flow Accumulation', icon: 'process', color: 'from-teal-500 to-cyan-500', quick: 'Tool: Catchment Area (SAGA)',
+                      description: 'This tool uses the Flow Direction grid to determine how many upstream cells flow into each individual cell. Cells with high values correspond to stream channels.',
+                      extras: [
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Catchment Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (Elevation):</strong> Your "Filled DEM".' },
+                          { type: 'protip', title: 'Note:', content: 'The tool is named "Catchment Area" in SAGA, but its main output is the flow accumulation raster, which is crucial for defining the river network.' }
+                      ]
+                    },
+                    { id: 5, title: 'Delineate Upslope Area', icon: 'output', color: 'from-cyan-500 to-sky-500', quick: 'Tool: Upslope Area (SAGA)',
+                      description: 'This tool delineates the specific catchment area (watershed) for a chosen outlet point by tracing all cells upstream that contribute flow to it.',
+                      extras: [
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Upslope Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input:</strong> You must provide the X and Y coordinates of your chosen outlet point (in meters).<br><strong>Output:</strong> A raster file where the watershed cells have one value, and all other cells have another.'}
+                      ]
+                    },
+                    { id: 6, title: 'Convert to Vector', icon: 'advanced', color: 'from-sky-500 to-blue-500', quick: 'Tool: Polygonize (Raster to Vector)',
+                      description: 'Convert the raster watershed into a vector polygon for easier measurement, analysis, and map-making.',
+                      extras: [
+                          { type: 'params', title: 'Actions:', content: '<strong>1. Tool:</strong> Use the <strong>Polygonize (Raster to Vector)</strong> tool from <code>Raster > Conversion</code>.<br><strong>2. Cleanup:</strong> Open the attribute table of the new vector file. Select and delete the polygon(s) that represent the area outside your watershed, leaving only the single desired polygon.'}
+                      ]
+                    },
+                    { id: 7, title: 'Extract Channel Network', icon: 'advanced', color: 'from-blue-500 to-indigo-500', quick: 'Tool: Channel Network (SAGA)',
+                      description: 'This optional step automatically extracts the stream network as a vector line file.',
+                      extras: [
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Channel Network and Drainage Basins<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Channels</code><br><strong>Elevation:</strong> Your "Filled DEM".<br><strong>Threshold:</strong> A critical parameter that defines the minimum number of cells required to form a channel. A lower value (e.g., 5) creates a denser network.'}
+                      ]
+                    }
+                ]
+            }
+        };
+
+        function getExtraInfoHTML(extra) {
+            const colors = {
+                protip: { bg: 'bg-green-50', border: 'border-green-500', title: 'text-green-800', text: 'text-green-700' },
+                params: { bg: 'bg-blue-50', border: 'border-blue-500', title: 'text-blue-800', text: 'text-blue-700' }
+            };
+            const color = colors[extra.type] || colors.params;
+            return `<div class="mt-3 p-3 ${color.bg} border-l-4 ${color.border} rounded-r-md"><p class="font-semibold ${color.title}">${extra.title}</p><p class="text-sm ${color.text}">${extra.content}</p></div>`;
+        }
+        
+        function createFlowchartHTML(data, viewType) {
+            return data.map((step, index) => {
+                const stepNumber = index + 1;
+                
+                if (viewType === 'quick') {
+                    return `
+                        <div class="flowchart-step-container">
+                            ${index > 0 ? '<div class="flowchart-arrow"></div>' : ''}
+                            <div class="flowchart-node relative bg-gradient-to-br ${step.color} text-white rounded-lg p-4 flex items-center shadow-lg w-full">
+                                ${ICONS[step.icon]}
+                                <div class="flex-grow">
+                                    <h3 class="font-bold">${stepNumber}. ${step.title}</h3>
+                                    <p class="text-sm text-white/80">${step.quick}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                } else { // Detailed view
+                    return `
+                        <div class="flowchart-step-container">
+                            ${index > 0 ? '<div class="flowchart-arrow"></div>' : ''}
+                            <div class="flowchart-step">
+                                <button class="flowchart-node-wrapper w-full text-left rounded-lg" data-action="toggleDetails" aria-expanded="false">
+                                    <div class="flowchart-node relative bg-gradient-to-br ${step.color} text-white rounded-lg p-4 flex items-center shadow-lg w-full">
+                                        ${ICONS[step.icon]}
+                                        <div class="flex-grow">
+                                            <h3 class="font-bold">${stepNumber}. ${step.title}</h3>
+                                        </div>
+                                        <svg class="chevron w-6 h-6 text-white/80 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                                    </div>
+                                </button>
+                                <div class="inline-details">
+                                    <div class="p-4 mt-2 bg-white rounded-lg text-gray-700 border shadow-inner">
+                                        <p>${step.description}</p>
+                                        ${(step.extras || []).map(getExtraInfoHTML).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            }).join('');
+        }
+        
+        function createDocumentViewHTML(data) {
+            let html = `<div><p class="mb-6 text-gray-600">This guide provides the complete workflow for delineating a watershed.</p>`;
+            html += data.map((step, index) => {
+                 const stepNumber = index + 1;
+                 return `
+                    <div class="doc-step-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Step ${stepNumber}: ${step.title}</h3>
+                        <p class="text-gray-700">${step.description}</p>
+                        ${(step.extras || []).map(getExtraInfoHTML).join('')}
+                    </div>`;
+            }).join('');
+            html += '</div>';
+            return html;
+        }
+
+        function renderTasks(software, tasks, data) {
+            const taskListContainer = document.getElementById(`${software}-task-list`);
+            if (!taskListContainer) return;
+
+            let tasksHTML = tasks.map(task => {
+                const colorClass = task.color === 'green' ? 'text-green-600 bg-green-100' : 'text-indigo-600 bg-indigo-100';
+                return `
+                    <button class="task-card text-left bg-white p-6 rounded-xl shadow-lg border border-gray-200" data-action="showTask" data-params="${software},${task.key}">
+                        <div class="flex items-center mb-3">
+                            <div class="p-3 ${colorClass} rounded-full mr-4">${task.icon.replace('h-6 w-6 mr-3', 'h-8 w-8')}</div>
+                            <h3 class="text-xl font-bold text-gray-900">${task.title}</h3>
+                        </div>
+                        <p class="text-gray-600">${task.description}</p>
+                    </button>
+                `}).join('');
+            
+            tasksHTML += `<div class="task-card bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-semibold text-gray-500">More Tasks Coming Soon</h3>
+                    <p class="text-gray-400 mt-1 text-sm">Future guides will appear here.</p>
+                </div>`;
+            taskListContainer.innerHTML = tasksHTML;
+
+            // Render the content for each task
+            tasks.forEach(task => {
+                const guideContainer = document.getElementById(`${software}-${task.key}-guide`);
+                if(guideContainer){
+                    guideContainer.querySelector(`#${software}-${task.key}-quick-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'quick');
+                    guideContainer.querySelector(`#${software}-${task.key}-detailed-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'detailed');
+                    guideContainer.querySelector(`#${software}-${task.key}-document-view`).innerHTML = createDocumentViewHTML(data[task.key]);
+                }
+            });
+        }
+
+        function showSoftware(software, btn) {
+            document.querySelectorAll('.software-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`${software}-content`).classList.remove('hidden');
+            document.querySelectorAll('.main-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function showTask(software, task) {
+            document.getElementById(`${software}-task-selection`).classList.add('hidden');
+            document.getElementById(`${software}-${task}-guide`).classList.remove('hidden');
+        }
+
+        function showTaskSelection(software) {
+            document.getElementById(`${software}-task-selection`).classList.remove('hidden');
+            document.querySelectorAll(`[id^="${software}-"][id$="-guide"]`).forEach(el => el.classList.add('hidden'));
+        }
+
+        function switchView(guideId, view, btn) {
+            const container = document.getElementById(`${guideId}-guide`);
+            container.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+            container.querySelector(`#${guideId}-${view}-flowchart, #${guideId}-${view}-view`).classList.remove('hidden');
+            
+            container.querySelectorAll('.view-toggle-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function toggleDetails(buttonElement) {
+            const isExpanded = buttonElement.getAttribute('aria-expanded') === 'true';
+            const flowchart = buttonElement.closest('.flowchart');
+            
+            if (flowchart) {
+                flowchart.querySelectorAll('.flowchart-node-wrapper[aria-expanded="true"]').forEach(openButton => {
+                    if (openButton !== buttonElement) {
+                        openButton.setAttribute('aria-expanded', 'false');
+                        openButton.parentElement.querySelector('.inline-details').classList.remove('open');
+                        openButton.querySelector('.flowchart-node').classList.remove('active');
+                        openButton.querySelector('.chevron').style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+
+            buttonElement.setAttribute('aria-expanded', !isExpanded);
+            const stepElement = buttonElement.parentElement;
+            stepElement.querySelector('.inline-details').classList.toggle('open');
+            buttonElement.querySelector('.flowchart-node').classList.toggle('active');
+            buttonElement.querySelector('.chevron').style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+        
+        // --- Initial Setup & Event Delegation ---
+        if(document.getElementById('arcgis-task-list')) {
+            renderTasks('arcgis', arcgisTasks, allData.arcgis);
+        }
+        if(document.getElementById('qgis-task-list')) {
+            renderTasks('qgis', qgisTasks, allData.qgis);
+        }
+        
+        document.body.addEventListener('click', (e) => {
+            const button = e.target.closest('button[data-action]');
+            if (!button) return;
+
+            const action = button.dataset.action;
+            const params = button.dataset.params ? button.dataset.params.split(',') : [];
+
+            switch (action) {
+                case 'showSoftware':
+                    showSoftware(params[0], button);
+                    break;
+                case 'showTask':
+                    showTask(params[0], params[1]);
+                    break;
+                case 'showTaskSelection':
+                    showTaskSelection(params[0]);
+                    break;
+                case 'switchView':
+                    switchView(params[0], params[1], button);
+                    break;
+                case 'toggleDetails':
+                    toggleDetails(button);
+                    break;
+            }
+        });
+    }
+});
