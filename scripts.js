@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- GUIDES PAGE LOGIC ---
+    // This check ensures this code only runs on the guides.html page
     if (document.querySelector('#arcgis-task-list')) {
         const ICONS = {
             data: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H6a2 2 0 00-2 2z" /></svg>`,
@@ -212,79 +213,3 @@ document.addEventListener('DOMContentLoaded', () => {
         function showTask(software, task) {
             document.getElementById(`${software}-task-selection`).classList.add('hidden');
             document.getElementById(`${software}-${task}-guide`).classList.remove('hidden');
-        }
-
-        function showTaskSelection(software) {
-            document.getElementById(`${software}-task-selection`).classList.remove('hidden');
-            document.querySelectorAll(`[id^="${software}-"][id$="-guide"]`).forEach(el => el.classList.add('hidden'));
-        }
-
-        function switchView(guideId, view, btn) {
-            const container = document.getElementById(`${guideId}-guide`);
-            container.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
-            container.querySelector(`#${guideId}-${view}-flowchart, #${guideId}-${view}-view`).classList.remove('hidden');
-            
-            container.querySelectorAll('.view-toggle-btn').forEach(el => el.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function toggleDetails(buttonElement) {
-            const isExpanded = buttonElement.getAttribute('aria-expanded') === 'true';
-            const flowchart = buttonElement.closest('.flowchart');
-            
-            if (flowchart) {
-                flowchart.querySelectorAll('.flowchart-node-wrapper[aria-expanded="true"]').forEach(openButton => {
-                    if (openButton !== buttonElement) {
-                        openButton.setAttribute('aria-expanded', 'false');
-                        openButton.parentElement.querySelector('.inline-details').classList.remove('open');
-                        openButton.querySelector('.flowchart-node').classList.remove('active');
-                        openButton.querySelector('.chevron').style.transform = 'rotate(0deg)';
-                    }
-                });
-            }
-
-            buttonElement.setAttribute('aria-expanded', !isExpanded);
-            const stepElement = buttonElement.parentElement;
-            stepElement.querySelector('.inline-details').classList.toggle('open');
-            buttonElement.querySelector('.flowchart-node').classList.toggle('active');
-            buttonElement.querySelector('.chevron').style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
-        }
-        
-        // --- Initial Setup & Event Delegation ---
-        document.getElementById('arcgis-watershed-quick-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'quick');
-        document.getElementById('arcgis-watershed-detailed-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'detailed');
-        document.getElementById('arcgis-watershed-document-view').innerHTML = createDocumentViewHTML(arcgisData.watershed);
-        renderTasks('arcgis');
-        
-        document.body.addEventListener('click', (e) => {
-            const button = e.target.closest('button[data-action]');
-            if (!button) return;
-
-            const action = button.dataset.action;
-            const params = button.dataset.params ? button.dataset.params.split(',') : [];
-
-            switch (action) {
-                case 'showSoftware':
-                    showSoftware(params[0], button);
-                    break;
-                case 'showTask':
-                    showTask(params[0], params[1]);
-                    break;
-                case 'showTaskSelection':
-                    showTaskSelection(params[0]);
-                    break;
-                case 'switchView':
-                    switchView(params[0], params[1], button);
-                    break;
-                case 'toggleDetails':
-                    toggleDetails(button);
-                    break;
-            }
-        });
-    }
-});
-</script>
-
-</body>
-</html>
-
