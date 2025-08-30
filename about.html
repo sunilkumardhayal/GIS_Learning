@@ -10,6 +10,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
+    <!-- Header -->
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
@@ -27,6 +28,39 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
             </button>
         </div>
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
             <a href="index.html" class="block py-2 text-gray-600 hover:text-indigo-600">Home</a>
-            <a href="guides.html" class="block py-2 text-gray
+            <a href="guides.html" class="block py-2 text-gray-600 hover:text-indigo-600">Guides</a>
+            <a href="about.html" class="block py-2 text-indigo-600 font-semibold">About</a>
+        </div>
+    </header>
+
+    <main class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-xl shadow-lg">
+                <h2 class="text-4xl font-extrabold text-center mb-8 text-gray-900">About the GIS Learning Hub</h2>
+                <div class="prose lg:prose-lg max-w-none text-gray-700 space-y-4">
+                    <p>Welcome to the GIS Learning Hub, a dedicated platform designed to demystify complex geospatial workflows. Our mission is to provide clear, concise, and interactive guides for students, professionals, and enthusiasts in the GIS community.</p>
+                    <p>We believe that learning powerful software like ArcGIS Pro and QGIS should be an intuitive and engaging experience. That's why we've moved beyond static documentation to create dynamic learning tools, including:</p>
+                    <ul>
+                        <li><strong>Interactive Flowcharts:</strong> Visualize entire workflows at a glance to understand the sequence and relationship between steps.</li>
+                        <li><strong>Detailed Breakdowns:</strong> Dive into each step with comprehensive details, tool parameters, and pro tips to ensure you're never stuck.</li>
+                        <li><strong>Multiple Viewing Formats:</strong> Whether you prefer a quick summary, an interactive deep-dive, or a traditional document, our guides adapt to your learning style.</li>
+                    </ul>
+                    <p>This project is a living resource. We are continuously working to add more guides, cover more advanced topics, and expand our content to include a wider range of GIS software and techniques. Our goal is to build a comprehensive library that can support you throughout your GIS journey.</p>
+                    <p>Thank you for visiting. We hope you find these resources valuable, and we welcome any feedback you might have.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="current-year"></span> GIS Learning Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
