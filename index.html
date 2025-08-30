@@ -29,7 +29,6 @@
             transform: scale(1.03);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         }
-        /* Accessibility Focus State */
         .flowchart-node-wrapper:focus-visible .flowchart-node {
             outline: 3px solid #4f46e5;
             outline-offset: 2px;
@@ -65,6 +64,22 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
+        /* Styles for Document View */
+        .doc-step-card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .doc-tool-info {
+            background-color: #f3f4f6;
+            border-left: 4px solid #4f46e5;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -79,7 +94,7 @@
 
     <div class="container mx-auto px-4 py-8">
         
-        <div class="flex justify-center mb-8 bg-white/50 rounded-xl p-2 shadow-md max-w-md mx-auto">
+        <div class="flex justify-center mb-8 bg-white/50 rounded-xl p-2 shadow-md max-w-lg mx-auto">
             <button class="main-tab active w-1/2 p-3 font-semibold rounded-lg border-2 border-transparent transition-all" onclick="showSoftware('arcgis')">ArcGIS Pro</button>
             <button class="main-tab w-1/2 p-3 font-semibold rounded-lg border-2 border-transparent transition-all text-gray-500" onclick="showSoftware('qgis')">QGIS</button>
         </div>
@@ -90,20 +105,8 @@
                 <!-- Task Selection -->
                 <div id="arcgis-task-selection">
                     <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Select a Task</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Watershed Delineation Task Card -->
-                        <button class="task-card text-left bg-white p-6 rounded-xl shadow-lg border border-gray-200" onclick="showTask('arcgis', 'watershed')">
-                            <div class="flex items-center mb-3">
-                                <div class="p-3 bg-indigo-100 rounded-full mr-4">${ICONS.process.replace('h-6 w-6 mr-3', 'h-8 w-8 text-indigo-600')}</div>
-                                <h3 class="text-xl font-bold text-gray-900">Watershed Delineation</h3>
-                            </div>
-                            <p class="text-gray-600">An interactive guide to delineating catchment areas from a Digital Elevation Model (DEM).</p>
-                        </button>
-                        <!-- Future task cards go here -->
-                        <div class="task-card bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center">
-                            <h3 class="text-lg font-semibold text-gray-500">More Tasks Coming Soon</h3>
-                            <p class="text-gray-400 mt-1 text-sm">Future guides like Network Analysis will appear here.</p>
-                        </div>
+                    <div id="arcgis-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Tasks will be injected by JavaScript -->
                     </div>
                 </div>
 
@@ -119,13 +122,15 @@
                             <div></div> <!-- Spacer -->
                         </div>
                         
-                        <div class="flex justify-center mb-6 p-1 bg-indigo-100 rounded-lg max-w-xs mx-auto">
-                            <button class="view-toggle-btn active w-1/2 py-2 text-sm font-medium rounded-md" onclick="switchView('arcgis-watershed', 'quick', this)">Quick View</button>
-                            <button class="view-toggle-btn w-1/2 py-2 text-sm font-medium rounded-md text-gray-600" onclick="switchView('arcgis-watershed', 'detailed', this)">Detailed View</button>
+                        <div class="flex justify-center mb-6 p-1 bg-indigo-100 rounded-lg max-w-md mx-auto">
+                            <button class="view-toggle-btn active w-1/3 py-2 text-sm font-medium rounded-md" onclick="switchView('arcgis-watershed', 'quick', this)">Quick View</button>
+                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" onclick="switchView('arcgis-watershed', 'detailed', this)">Detailed View</button>
+                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" onclick="switchView('arcgis-watershed', 'document', this)">Document View</button>
                         </div>
                         
-                        <div id="arcgis-watershed-quick-flowchart" class="flowchart"></div>
-                        <div id="arcgis-watershed-detailed-flowchart" class="flowchart hidden"></div>
+                        <div id="arcgis-watershed-quick-flowchart" class="view-content"></div>
+                        <div id="arcgis-watershed-detailed-flowchart" class="view-content hidden"></div>
+                        <div id="arcgis-watershed-document-view" class="view-content hidden"></div>
                     </div>
                 </div>
             </div>
@@ -153,6 +158,15 @@
             output: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
             advanced: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>`
         };
+
+        const arcgisTasks = [
+            {
+                key: 'watershed',
+                title: 'Watershed Delineation',
+                description: 'An interactive guide to delineating catchment areas from a Digital Elevation Model (DEM).',
+                icon: ICONS.process
+            }
+        ];
 
         const arcgisData = {
             watershed: [
@@ -210,16 +224,59 @@
             }).join('');
         }
         
-        // Initial population of flowcharts
-        document.getElementById('arcgis-watershed-quick-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'quick');
-        document.getElementById('arcgis-watershed-detailed-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'detailed');
-        
-        // Main software tabs
-        const mainTabs = document.querySelectorAll('.main-tab');
-        mainTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                mainTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+        function createDocumentViewHTML(data) {
+            let html = `<div><p class="mb-6 text-gray-600">This guide provides the complete workflow for delineating a watershed using a Digital Elevation Model (DEM) in ArcGIS Pro. The steps cover the core process and optional advanced analyses.</p>`;
+            html += data.map((step, index) => {
+                 return `
+                    <div class="doc-step-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Step ${index + 1}: ${step.title}</h3>
+                        <div class="text-gray-700">${step.detailed.replace(/<div class="mt-3.*?<\/div>/g, '')}</div>
+                         ${step.detailed.match(/<div class="mt-3.*?<\/div>/g) ? step.detailed.match(/<div class="mt-3.*?<\/div>/g).join('') : ''}
+                    </div>
+                `
+            }).join('');
+            html += '</div>';
+            return html;
+        }
+
+        function renderTasks(software) {
+            const taskListContainer = document.getElementById(`${software}-task-list`);
+            if (!taskListContainer) return;
+
+            let tasksHTML = '';
+            if (software === 'arcgis') {
+                tasksHTML = arcgisTasks.map(task => `
+                    <button class="task-card text-left bg-white p-6 rounded-xl shadow-lg border border-gray-200" onclick="showTask('${software}', '${task.key}')">
+                        <div class="flex items-center mb-3">
+                            <div class="p-3 bg-indigo-100 rounded-full mr-4">${task.icon.replace('h-6 w-6 mr-3', 'h-8 w-8 text-indigo-600')}</div>
+                            <h3 class="text-xl font-bold text-gray-900">${task.title}</h3>
+                        </div>
+                        <p class="text-gray-600">${task.description}</p>
+                    </button>
+                `).join('');
+            }
+            
+            tasksHTML += `
+                <div class="task-card bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-semibold text-gray-500">More Tasks Coming Soon</h3>
+                    <p class="text-gray-400 mt-1 text-sm">Future guides like Network Analysis will appear here.</p>
+                </div>
+            `;
+            taskListContainer.innerHTML = tasksHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('arcgis-watershed-quick-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'quick');
+            document.getElementById('arcgis-watershed-detailed-flowchart').innerHTML = createFlowchartHTML(arcgisData.watershed, 'detailed');
+            document.getElementById('arcgis-watershed-document-view').innerHTML = createDocumentViewHTML(arcgisData.watershed);
+            renderTasks('arcgis');
+            
+            const mainTabs = document.querySelectorAll('.main-tab');
+            mainTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    mainTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
             });
         });
 
@@ -228,7 +285,6 @@
             document.getElementById(`${software}-content`).classList.remove('hidden');
         }
 
-        // Task selection and guide view
         function showTask(software, task) {
             document.getElementById(`${software}-task-selection`).classList.add('hidden');
             document.getElementById(`${software}-${task}-guide`).classList.remove('hidden');
@@ -236,14 +292,13 @@
 
         function showTaskSelection(software) {
             document.getElementById(`${software}-task-selection`).classList.remove('hidden');
-            document.querySelectorAll('[id^="'+software+'-"][id$="-guide"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll(`[id^="${software}-"][id$="-guide"]`).forEach(el => el.classList.add('hidden'));
         }
 
-        // View toggling within a guide
         function switchView(guideId, view, btn) {
             const container = document.getElementById(`${guideId}-guide`);
-            container.querySelectorAll('.flowchart').forEach(el => el.classList.add('hidden'));
-            container.querySelector(`#${guideId}-${view}-flowchart`).classList.remove('hidden');
+            container.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+            container.querySelector(`#${guideId}-${view}-flowchart, #${guideId}-${view}-view`).classList.remove('hidden');
             
             container.querySelectorAll('.view-toggle-btn').forEach(el => {
                 el.classList.remove('active');
@@ -251,12 +306,10 @@
             btn.classList.add('active');
         }
 
-        // Accordion for detailed view
         function toggleDetails(buttonElement) {
             const isExpanded = buttonElement.getAttribute('aria-expanded') === 'true';
             const flowchart = buttonElement.closest('.flowchart');
             
-            // Close any other open items in the same flowchart
             flowchart.querySelectorAll('.flowchart-node-wrapper[aria-expanded="true"]').forEach(openButton => {
                 if (openButton !== buttonElement) {
                     openButton.setAttribute('aria-expanded', 'false');
@@ -266,7 +319,6 @@
                 }
             });
 
-            // Toggle the clicked item
             buttonElement.setAttribute('aria-expanded', !isExpanded);
             const stepElement = buttonElement.parentElement;
             stepElement.querySelector('.inline-details').classList.toggle('open');
