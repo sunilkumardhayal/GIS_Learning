@@ -1,0 +1,85 @@
+/* Base Styles */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Hero Section on Home Page */
+.hero-bg {
+    background-color: #111827;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
+    background-size: 2rem 2rem;
+}
+
+/* Glassmorphism Card for Guides */
+.glass-card {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Flowchart Styles */
+.flowchart-node {
+    transition: all 0.3s ease;
+}
+.flowchart-node-wrapper:hover .flowchart-node, .flowchart-node.active {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+}
+.flowchart-node-wrapper:focus-visible .flowchart-node {
+    outline: 3px solid #4f46e5;
+    outline-offset: 2px;
+}
+.flowchart-arrow {
+    height: 2.5rem; 
+    width: 2px;
+    background: #cbd5e1;
+    margin: 0.5rem auto;
+}
+.inline-details {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 0;
+    overflow: hidden;
+}
+.inline-details.open {
+    max-height: 800px;
+}
+
+/* Tab & Button Styles */
+.main-tab.active {
+    border-color: #4f46e5;
+    background-color: #eef2ff;
+    color: #4338ca;
+}
+.view-toggle-btn.active {
+    background-color: #4f46e5;
+    color: white;
+    box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
+}
+
+/* Task Card Interaction */
+.task-card {
+     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.task-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.15), 0 0 20px rgba(79, 70, 229, 0.3);
+}
+
+/* Styles for Document View */
+.doc-step-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.doc-step-card code {
+    background-color: #eef2ff;
+    color: #4338ca;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+}
+
