@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- GUIDES PAGE LOGIC ---
-    // This check ensures this code only runs on the guides.html page
     if (document.querySelector('#arcgis-task-list')) {
         const ICONS = {
             data: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H6a2 2 0 00-2 2z" /></svg>`,
