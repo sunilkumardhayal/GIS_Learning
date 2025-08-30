@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS Learning Hub | ArcGIS Pro Guides</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-2">
+                <svg class="h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m0 0v2.25m0-2.25h1.5m-1.5 0h-1.5m0-11.25h1.5m-1.5 0h-1.5m6.375 11.25h1.5m-1.5 0h-1.5m0 0v2.25m0-2.25v-2.25m0 0h1.5m-1.5 0h-1.5m-1.5-9h1.5m-1.5 0v1.5m0 0h1.5m-1.5 0h-1.5m-1.5 0V3m6 18v-2.25m0 2.25h1.5m-1.5 0h-1.5m0 0v-2.25m0 2.25v-2.25m0 0h1.5m-1.5 0h-1.5m6.75-12v2.25m0 2.25h-1.5m1.5 0h1.5m0 0v-2.25m0 2.25v-2.25m0 0h-1.5m1.5 0h1.5" /></svg>
+                <span class="text-2xl font-bold text-gray-900">GIS Learning Hub</span>
+            </a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">Home</a>
+                <a href="arcgis.html" class="text-indigo-600 font-semibold">ArcGIS Pro</a>
+                <a href="qgis.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">QGIS</a>
+                <a href="about.html" class="text-gray-600 hover:text-indigo-600 transition duration-300">About</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="index.html" class="block py-2 text-gray-600 hover:text-indigo-600">Home</a>
+            <a href="arcgis.html" class="block py-2 text-indigo-600 font-semibold">ArcGIS Pro</a>
+            <a href="qgis.html" class="block py-2 text-gray-600 hover:text-indigo-600">QGIS</a>
+            <a href="about.html" class="block py-2 text-gray-600 hover:text-indigo-600">About</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-16">
+        <!-- Task Selection -->
+        <div id="arcgis-task-selection">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">ArcGIS Pro Guides</h2>
+            <div id="arcgis-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Tasks will be injected by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Watershed Delineation Guide -->
+        <div id="arcgis-watershed-guide" class="hidden">
+            <div class="glass-card rounded-xl shadow-2xl p-6 md:p-8">
+                <div class="flex justify-between items-center mb-4">
+                    <button class="flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors" data-action="showTaskSelection" data-params="arcgis">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                        Back to Guides
+                    </button>
+                    <h2 class="text-2xl font-bold text-center text-indigo-700">Watershed Delineation</h2>
+                    <div></div> <!-- Spacer -->
+                </div>
+                
+                <div class="flex justify-center mb-6 p-1 bg-indigo-100 rounded-lg max-w-md mx-auto">
+                    <button class="view-toggle-btn active w-1/3 py-2 text-sm font-medium rounded-md" data-action="switchView" data-params="arcgis-watershed,quick">Quick View</button>
+                    <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,detailed">Detailed View</button>
+                    <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,document">Document View</button>
+                </div>
+                
+                <div id="arcgis-watershed-quick-flowchart" class="view-content flowchart"></div>
+                <div id="arcgis-watershed-detailed-flowchart" class="view-content flowchart hidden"></div>
+                <div id="arcgis-watershed-document-view" class="view-content hidden"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="bg-gray-800 text-gray-400 py-8 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; <span id="current-year"></span> GIS Learning Hub. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="scripts.js"></script>
+</body>
+</html>
