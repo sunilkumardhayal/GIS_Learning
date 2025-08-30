@@ -45,8 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- GUIDES PAGE LOGIC ---
-    // This check ensures this code only runs on the guides.html page
-    if (document.querySelector('#arcgis-task-list')) {
+    if (document.querySelector('#arcgis-task-list') || document.querySelector('#qgis-task-list')) {
         const ICONS = {
             data: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 1.1.9 2 2 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H6a2 2 0 00-2 2z" /></svg>`,
             process: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><circle cx="12" cy="12" r="3" /></svg>`,
@@ -60,57 +59,105 @@ document.addEventListener('DOMContentLoaded', () => {
                 key: 'watershed',
                 title: 'Watershed Delineation',
                 description: 'An interactive guide to delineating catchment areas from a Digital Elevation Model (DEM).',
-                icon: ICONS.process
+                icon: ICONS.process,
+                color: 'indigo'
             }
         ];
 
-        const arcgisData = {
-            watershed: [
-                { id: 1, title: 'Add DEM Data', icon: 'data', color: 'from-green-400 to-blue-500', quick: 'Add DEM to map.', 
-                  description: 'The first step is to add your DEM data (e.g., a 30m SRTM GeoTIFF) to ArcGIS Pro. This can be done by simply dragging the file into the map view.',
-                  extras: [
-                    { type: 'protip', title: 'Pro Tip:', content: 'Right-click the DEM layer and go to <strong>Symbology</strong> to apply a color scheme. This helps to visually identify high elevation areas (hills) and low elevation areas (valleys) before you begin the analysis.' }
-                  ]
-                },
-                { id: 2, title: 'Fill Sinks', icon: 'process', color: 'from-blue-500 to-cyan-500', quick: 'Tool: Fill', 
-                  description: 'This process corrects imperfections in the DEM to create a "hydrologically correct" surface, which is essential for accurate flow modeling.',
-                  extras: [
-                    { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Fill</code><br><strong>Input:</strong> Your original DEM raster.<br><strong>Output:</strong> A new "Filled" DEM raster (.tif).' }
-                  ]
-                },
-                { id: 3, title: 'Flow Direction', icon: 'process', color: 'from-cyan-500 to-teal-500', quick: 'Tool: Flow Direction',
-                  description: 'This tool creates a raster that shows the direction water will flow from each cell to its steepest downslope neighbor.',
-                  extras: [
-                    { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Flow Direction<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Flow Direction</code><br><strong>Input:</strong> Your "Filled" DEM from the previous step.<br><strong>Flow Direction Type:</strong> Use the default <strong>D8</strong> method.'}
-                  ]
-                },
-                { id: 4, title: 'Flow Accumulation', icon: 'process', color: 'from-teal-500 to-emerald-500', quick: 'Tool: Flow Accumulation',
-                  description: 'This tool calculates how many upstream cells flow into each cell, highlighting stream channels.',
-                  extras: [
-                    { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Flow Accumulation<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Flow Accumulation</code><br><strong>Input:</strong> Your "Flow Direction" raster.' },
-                    { type: 'protip', title: 'Pro Tip (Visualization):', content: 'To better see the river network, right-click the new layer > <strong>Symbology</strong>. Change the type to <strong>Classify</strong> with 2 classes. Lower the "upper value" of the first class (e.g., to 100,000) to reveal more tributaries.' }
-                  ]
-                },
-                { id: 5, title: 'Create Outlet Points', icon: 'action', color: 'from-emerald-500 to-lime-500', quick: 'Action: Create Point',
-                  description: 'You must manually define the specific point (or "pour point") for your watershed.',
-                  extras: [
-                      { type: 'params', title: 'Actions:', content: '<strong>1. Create Feature Class:</strong> In the <strong>Catalog</strong> pane, right-click your project folder > <code>New > Shapefile</code>. Set Geometry Type to "Point".<br><strong>2. Add Point:</strong> Go to the <strong>Edit</strong> tab and click <strong>Create</strong>. Select your new shapefile and place a point on a high-flow-accumulation cell (a white line on your Flow Accumulation raster).<br><strong>3. Save Edits:</strong> Crucially, click <strong>Save</strong> in the Edit tab to finalize the point creation.' }
-                  ]
-                },
-                { id: 6, title: 'Delineate Watershed', icon: 'output', color: 'from-lime-500 to-yellow-500', quick: 'Tool: Watershed',
-                  description: 'This is the final step that generates the watershed boundary based on your flow direction and outlet point.',
-                  extras: [
-                      { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Watershed<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Watershed</code><br><strong>Input Flow Direction Raster:</strong> Your "Flow Direction" raster.<br><strong>Input Point Data:</strong> Your outlet point shapefile.'}
-                  ]
-                },
-                { id: 7, title: 'Optional Advanced Steps', icon: 'advanced', color: 'from-yellow-500 to-amber-500', quick: 'Convert & Generate Rivers',
-                  description: 'These steps convert your raster results into more usable vector formats.',
-                  extras: [
-                    { type: 'params', title: 'Convert Watershed to Polygon:', content: '<strong>Tool:</strong> Raster to Polygon<br><strong>Location:</strong> <code>Conversion Tools > From Raster</code><br>This is useful for calculating the watershed area.' },
-                    { type: 'params', title: 'Generate River Lines:', content: '<strong>1. Reclassify:</strong> Use the <strong>Reclassify</strong> tool on your Flow Accumulation raster to isolate high-value cells (the streams).<br><strong>2. Raster to Polyline:</strong> Use this tool to convert the reclassified stream raster into a line feature.<br><strong>3. Clip:</strong> Use the <strong>Clip</strong> tool to trim the river lines to your watershed boundary polygon.'}
-                  ]
-                }
-            ]
+        const qgisTasks = [
+            {
+                key: 'watershed',
+                title: 'Watershed Delineation',
+                description: 'An interactive guide to delineating catchment areas using tools from the SAGA toolbox.',
+                icon: ICONS.process,
+                color: 'green'
+            }
+        ];
+
+        const allData = {
+            arcgis: {
+                watershed: [
+                    { id: 1, title: 'Add DEM Data', icon: 'data', color: 'from-green-400 to-blue-500', quick: 'Add DEM to map.', 
+                      description: 'The first step is to add your DEM data (e.g., a 30m SRTM GeoTIFF) to ArcGIS Pro. This can be done by simply dragging the file into the map view.',
+                      extras: [
+                        { type: 'protip', title: 'Pro Tip:', content: 'Right-click the DEM layer and go to <strong>Symbology</strong> to apply a color scheme. This helps to visually identify high elevation areas (hills) and low elevation areas (valleys) before you begin the analysis.' }
+                      ]
+                    },
+                    { id: 2, title: 'Fill Sinks', icon: 'process', color: 'from-blue-500 to-cyan-500', quick: 'Tool: Fill', 
+                      description: 'This process corrects imperfections in the DEM to create a "hydrologically correct" surface, which is essential for accurate flow modeling.',
+                      extras: [
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Fill</code><br><strong>Input:</strong> Your original DEM raster.<br><strong>Output:</strong> A new "Filled" DEM raster (.tif).' }
+                      ]
+                    },
+                    { id: 3, title: 'Flow Direction', icon: 'process', color: 'from-cyan-500 to-teal-500', quick: 'Tool: Flow Direction',
+                      description: 'This tool creates a raster that shows the direction water will flow from each cell to its steepest downslope neighbor.',
+                      extras: [
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Flow Direction<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Flow Direction</code><br><strong>Input:</strong> Your "Filled" DEM from the previous step.<br><strong>Flow Direction Type:</strong> Use the default <strong>D8</strong> method.'}
+                      ]
+                    },
+                    { id: 4, title: 'Flow Accumulation', icon: 'process', color: 'from-teal-500 to-emerald-500', quick: 'Tool: Flow Accumulation',
+                      description: 'This tool calculates how many upstream cells flow into each cell, highlighting stream channels.',
+                      extras: [
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Flow Accumulation<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Flow Accumulation</code><br><strong>Input:</strong> Your "Flow Direction" raster.' },
+                        { type: 'protip', title: 'Pro Tip (Visualization):', content: 'To better see the river network, right-click the new layer > <strong>Symbology</strong>. Change the type to <strong>Classify</strong> with 2 classes. Lower the "upper value" of the first class (e.g., to 100,000) to reveal more tributaries.' }
+                      ]
+                    },
+                    { id: 5, title: 'Create Outlet Points', icon: 'action', color: 'from-emerald-500 to-lime-500', quick: 'Action: Create Point',
+                      description: 'You must manually define the specific point (or "pour point") for your watershed.',
+                      extras: [
+                          { type: 'params', title: 'Actions:', content: '<strong>1. Create Feature Class:</strong> In the <strong>Catalog</strong> pane, right-click your project folder > <code>New > Shapefile</code>. Set Geometry Type to "Point".<br><strong>2. Add Point:</strong> Go to the <strong>Edit</strong> tab and click <strong>Create</strong>. Select your new shapefile and place a point on a high-flow-accumulation cell (a white line on your Flow Accumulation raster).<br><strong>3. Save Edits:</strong> Crucially, click <strong>Save</strong> in the Edit tab to finalize the point creation.' }
+                      ]
+                    },
+                    { id: 6, title: 'Delineate Watershed', icon: 'output', color: 'from-lime-500 to-yellow-500', quick: 'Tool: Watershed',
+                      description: 'This is the final step that generates the watershed boundary based on your flow direction and outlet point.',
+                      extras: [
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Watershed<br><strong>Location:</strong> <code>Geoprocessing > Spatial Analyst Tools > Hydrology > Watershed</code><br><strong>Input Flow Direction Raster:</strong> Your "Flow Direction" raster.<br><strong>Input Point Data:</strong> Your outlet point shapefile.'}
+                      ]
+                    },
+                    { id: 7, title: 'Optional Advanced Steps', icon: 'advanced', color: 'from-yellow-500 to-amber-500', quick: 'Convert & Generate Rivers',
+                      description: 'These steps convert your raster results into more usable vector formats.',
+                      extras: [
+                        { type: 'params', title: 'Convert Watershed to Polygon:', content: '<strong>Tool:</strong> Raster to Polygon<br><strong>Location:</strong> <code>Conversion Tools > From Raster</code><br>This is useful for calculating the watershed area.' },
+                        { type: 'params', title: 'Generate River Lines:', content: '<strong>1. Reclassify:</strong> Use the <strong>Reclassify</strong> tool on your Flow Accumulation raster to isolate high-value cells (the streams).<br><strong>2. Raster to Polyline:</strong> Use this tool to convert the reclassified stream raster into a line feature.<br><strong>3. Clip:</strong> Use the <strong>Clip</strong> tool to trim the river lines to your watershed boundary polygon.'}
+                      ]
+                    }
+                ]
+            },
+            qgis: {
+                 watershed: [
+                    { id: 1, title: 'Add DEM Data', icon: 'data', color: 'from-lime-500 to-green-500', quick: 'Add DEM raster to project.', 
+                      description: 'Begin by dragging your DEM file (e.g., GeoTIFF) into the QGIS Layers Panel, or by using the "Add Raster Layer" button. This elevation data is the foundation of the analysis.',
+                      extras: [
+                        { type: 'protip', title: 'Projection Check:', content: 'Ensure your DEM is in a projected coordinate system (e.g., UTM) for accurate area and distance calculations. You can reproject it using the <strong>Warp (Reproject)</strong> tool.' }
+                      ]
+                    },
+                    { id: 2, title: 'Fill Sinks', icon: 'process', color: 'from-green-500 to-emerald-500', quick: 'Tool: Fill Sinks (SAGA)',
+                      description: 'Use the <strong>Fill Sinks (Wang & Liu)</strong> tool from the SAGA provider to remove depressions in the DEM. This ensures water can flow continuously across the entire landscape.',
+                      extras: [
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Fill Sinks (Wang & Liu)<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (DEM):</strong> Your original DEM raster.<br><strong>Output (Filled DEM):</strong> A new "Filled DEM" raster.' }
+                      ]
+                    },
+                    { id: 3, title: 'Flow Direction & Accumulation', icon: 'process', color: 'from-emerald-500 to-teal-500', quick: 'Tool: Catchment Area (SAGA)',
+                      description: 'The <strong>Catchment Area</strong> tool in SAGA efficiently calculates multiple outputs at once, including Flow Direction and Flow Accumulation.',
+                      extras: [
+                        { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Catchment Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Input (Elevation):</strong> Your "Filled DEM" from the previous step.'},
+                        { type: 'protip', title: 'Multiple Outputs:', content: 'This tool creates several new layers. The two most important for this workflow are the <strong>Flow Direction</strong> raster and the <strong>Catchment Area</strong> raster (which is the Flow Accumulation).' }
+                      ]
+                    },
+                    { id: 4, title: 'Create Outlet Point', icon: 'action', color: 'from-teal-500 to-cyan-500', quick: 'Action: Create Point & Get Coordinates',
+                      description: 'You need to define the outlet (pour point) of your watershed. You will need its exact coordinates for the final step.',
+                      extras: [
+                          { type: 'params', title: 'Actions:', content: '<strong>1. Create New Layer:</strong> Go to <code>Layer > Create Layer > New Temporary Scratch Layer...</code>. Give it a name and set Geometry type to "Point".<br><strong>2. Add Point:</strong> Select the new layer, enable editing (pencil icon), and use the "Add Point Feature" tool to place a point on a bright line in your Catchment Area (Flow Accumulation) raster.<br><strong>3. Get Coordinates:</strong> Use the <strong>Coordinate Capture</strong> plugin (enable it in the Plugins menu if needed) to get the precise X and Y coordinates of the point you just created. Copy these values.' }
+                      ]
+                    },
+                    { id: 5, title: 'Delineate Watershed', icon: 'output', color: 'from-cyan-500 to-sky-500', quick: 'Tool: Upslope Area (SAGA)',
+                      description: 'The <strong>Upslope Area</strong> tool uses the flow direction and your outlet point coordinates to calculate the final watershed.',
+                      extras: [
+                          { type: 'params', title: 'Tool Parameters:', content: '<strong>Tool:</strong> Upslope Area<br><strong>Location:</strong> <code>Processing Toolbox > SAGA > Terrain Analysis - Hydrology</code><br><strong>Target X/Y Coordinates:</strong> Paste the X and Y coordinates of your outlet point.<br><strong>Elevation:</strong> Your "Filled DEM".<br><strong>Method:</strong> Use the default [0] Deterministic 8.'}
+                      ]
+                    }
+                ]
+            }
         };
 
         function getExtraInfoHTML(extra) {
@@ -165,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         function createDocumentViewHTML(data) {
-            let html = `<div><p class="mb-6 text-gray-600">This guide provides the complete workflow for delineating a watershed using a Digital Elevation Model (DEM) in ArcGIS Pro.</p>`;
+            let html = `<div><p class="mb-6 text-gray-600">This guide provides the complete workflow for delineating a watershed.</p>`;
             html += data.map((step, index) => {
                  const stepNumber = index + 1;
                  return `
@@ -179,28 +226,34 @@ document.addEventListener('DOMContentLoaded', () => {
             return html;
         }
 
-        function renderTasks(software) {
+        function renderTasks(software, tasks, data) {
             const taskListContainer = document.getElementById(`${software}-task-list`);
             if (!taskListContainer) return;
 
-            let tasksHTML = '';
-            if (software === 'arcgis') {
-                tasksHTML = arcgisTasks.map(task => `
-                    <button class="task-card text-left bg-white p-6 rounded-xl shadow-lg border border-gray-200" data-action="showTask" data-params="arcgis,${task.key}">
+            let tasksHTML = tasks.map(task => {
+                const colorClass = task.color === 'green' ? 'text-green-600 bg-green-100' : 'text-indigo-600 bg-indigo-100';
+                return `
+                    <button class="task-card text-left bg-white p-6 rounded-xl shadow-lg border border-gray-200" data-action="showTask" data-params="${software},${task.key}">
                         <div class="flex items-center mb-3">
-                            <div class="p-3 bg-indigo-100 rounded-full mr-4">${task.icon.replace('h-6 w-6 mr-3', 'h-8 w-8 text-indigo-600')}</div>
+                            <div class="p-3 ${colorClass} rounded-full mr-4">${task.icon.replace('h-6 w-6 mr-3', 'h-8 w-8')}</div>
                             <h3 class="text-xl font-bold text-gray-900">${task.title}</h3>
                         </div>
                         <p class="text-gray-600">${task.description}</p>
                     </button>
-                `).join('');
-            }
+                `}).join('');
             
             tasksHTML += `<div class="task-card bg-gray-50 p-6 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-center">
                     <h3 class="text-lg font-semibold text-gray-500">More Tasks Coming Soon</h3>
-                    <p class="text-gray-400 mt-1 text-sm">Future guides like Network Analysis will appear here.</p>
+                    <p class="text-gray-400 mt-1 text-sm">Future guides will appear here.</p>
                 </div>`;
             taskListContainer.innerHTML = tasksHTML;
+
+            // Render the content for each task
+            tasks.forEach(task => {
+                document.getElementById(`${software}-${task.key}-quick-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'quick');
+                document.getElementById(`${software}-${task.key}-detailed-flowchart`).innerHTML = createFlowchartHTML(data[task.key], 'detailed');
+                document.getElementById(`${software}-${task.key}-document-view`).innerHTML = createDocumentViewHTML(data[task.key]);
+            });
         }
 
         function showSoftware(software, btn) {
@@ -213,3 +266,75 @@ document.addEventListener('DOMContentLoaded', () => {
         function showTask(software, task) {
             document.getElementById(`${software}-task-selection`).classList.add('hidden');
             document.getElementById(`${software}-${task}-guide`).classList.remove('hidden');
+        }
+
+        function showTaskSelection(software) {
+            document.getElementById(`${software}-task-selection`).classList.remove('hidden');
+            document.querySelectorAll(`[id^="${software}-"][id$="-guide"]`).forEach(el => el.classList.add('hidden'));
+        }
+
+        function switchView(guideId, view, btn) {
+            const container = document.getElementById(`${guideId}-guide`);
+            container.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+            container.querySelector(`#${guideId}-${view}-flowchart, #${guideId}-${view}-view`).classList.remove('hidden');
+            
+            container.querySelectorAll('.view-toggle-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function toggleDetails(buttonElement) {
+            const isExpanded = buttonElement.getAttribute('aria-expanded') === 'true';
+            const flowchart = buttonElement.closest('.flowchart');
+            
+            if (flowchart) {
+                flowchart.querySelectorAll('.flowchart-node-wrapper[aria-expanded="true"]').forEach(openButton => {
+                    if (openButton !== buttonElement) {
+                        openButton.setAttribute('aria-expanded', 'false');
+                        openButton.parentElement.querySelector('.inline-details').classList.remove('open');
+                        openButton.querySelector('.flowchart-node').classList.remove('active');
+                        openButton.querySelector('.chevron').style.transform = 'rotate(0deg)';
+                    }
+                });
+            }
+
+            buttonElement.setAttribute('aria-expanded', !isExpanded);
+            const stepElement = buttonElement.parentElement;
+            stepElement.querySelector('.inline-details').classList.toggle('open');
+            buttonElement.querySelector('.flowchart-node').classList.toggle('active');
+            buttonElement.querySelector('.chevron').style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+        
+        // --- Initial Setup & Event Delegation ---
+        renderTasks('arcgis', arcgisTasks, allData.arcgis);
+        renderTasks('qgis', qgisTasks, allData.qgis);
+        
+        document.body.addEventListener('click', (e) => {
+            const button = e.target.closest('button[data-action]');
+            if (!button) return;
+
+            const action = button.dataset.action;
+            const params = button.dataset.params ? button.dataset.params.split(',') : [];
+
+            switch (action) {
+                case 'showSoftware':
+                    showSoftware(params[0], button);
+                    break;
+                case 'showTask':
+                    showTask(params[0], params[1]);
+                    break;
+                case 'showTaskSelection':
+                    showTaskSelection(params[0]);
+                    break;
+                case 'switchView':
+                    switchView(params[0], params[1], button);
+                    break;
+                case 'toggleDetails':
+                    toggleDetails(button);
+                    break;
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>
