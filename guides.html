@@ -10,7 +10,6 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- Header -->
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="index.html" class="flex items-center space-x-2">
@@ -28,7 +27,6 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
             </button>
         </div>
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
             <a href="index.html" class="block py-2 text-gray-600 hover:text-indigo-600">Home</a>
             <a href="guides.html" class="block py-2 text-indigo-600 font-semibold">Guides</a>
@@ -44,17 +42,13 @@
         </div>
 
         <main>
-            <!-- ArcGIS Pro Content -->
             <div id="arcgis-content" class="software-content">
-                <!-- Task Selection -->
                 <div id="arcgis-task-selection">
                     <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">ArcGIS Pro Guides</h2>
                     <div id="arcgis-task-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Tasks will be injected by JavaScript -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- Watershed Delineation Guide -->
                 <div id="arcgis-watershed-guide" class="hidden">
                     <div class="glass-card rounded-xl shadow-2xl p-6 md:p-8">
                         <div class="flex justify-between items-center mb-4">
@@ -63,40 +57,7 @@
                                 Back to Guides
                             </button>
                             <h2 class="text-2xl font-bold text-center text-indigo-700">Watershed Delineation</h2>
-                            <div></div> <!-- Spacer -->
-                        </div>
+                            <div></div> </div>
                         
                         <div class="flex justify-center mb-6 p-1 bg-indigo-100 rounded-lg max-w-md mx-auto">
-                            <button class="view-toggle-btn active w-1/3 py-2 text-sm font-medium rounded-md" data-action="switchView" data-params="arcgis-watershed,quick">Quick View</button>
-                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,detailed">Detailed View</button>
-                            <button class="view-toggle-btn w-1/3 py-2 text-sm font-medium rounded-md text-gray-600" data-action="switchView" data-params="arcgis-watershed,document">Document View</button>
-                        </div>
-                        
-                        <div id="arcgis-watershed-quick-flowchart" class="view-content flowchart"></div>
-                        <div id="arcgis-watershed-detailed-flowchart" class="view-content flowchart hidden"></div>
-                        <div id="arcgis-watershed-document-view" class="view-content hidden"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- QGIS Content -->
-            <div id="qgis-content" class="software-content hidden">
-                 <div class="glass-card rounded-xl shadow-2xl p-8 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-400 mb-4"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    <h2 class="text-2xl font-bold text-gray-700">Coming Soon!</h2>
-                    <p class="mt-2 text-gray-500">Step-by-step guides for QGIS are currently under development.</p>
-                </div>
-            </div>
-        </main>
-    </div>
-    
-    <footer class="bg-gray-800 text-gray-400 py-8">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; <span id="current-year"></span> GIS Learning Hub. All rights reserved.</p>
-        </div>
-    </footer>
-    
-    <script src="scripts.js"></script>
-</body>
-</html>
-
+                            <button
